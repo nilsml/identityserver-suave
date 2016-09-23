@@ -13,15 +13,31 @@ module Demo =
     let getLinks =
         "Look at all my links"
 
+    let identity _ =
+      let config = { defaultConfig with bindings = [ HttpBinding.createSimple Protocol.HTTP "127.0.0.1" 8003] }
+      let app =
+          choose [
+              pathStarts "/identityserver" >=> (OwinApp.ofAppFunc "/identityserver" identityServer =>= NOT_FOUND "File not found" )
+              NOT_FOUND "No handlers found"
+              ]
+      let a,startServer = startWebServerAsync config app
+      Async.Start startServer
+      a
+
     [<EntryPoint>]
     let main argv =
-        let config = defaultConfig
-
+        // Launch identity server first
+        let listening = identity ()
+        // Wait for the server to start listening
+        listening |> Async.RunSynchronously |> printfn "Identity server started: %A"
+        // The token authentication middleware will contact the identity server on construction
+        let securityMiddleware = securityMiddleware ()
         let app =
             choose [
-                GET >=> path "/" >=> OwinApp.ofAppFunc "/" securityMiddleware >=> OK getLinks
-                NOT_FOUND "Resource not found"
+                path "/devices" >=> (OwinApp.ofAppFunc "/devices" securityMiddleware =>= OK "Hello, this is a restricted area")
+                path "/test" >=> OK "Hello world, welcome to public recreational area."
+                NOT_FOUND "No handlers found"
             ]
-
-        startWebServer config app
+        // launch the app
+        startWebServer defaultConfig app
         0 
