@@ -24,6 +24,22 @@ module Demo =
       Async.Start startServer
       a
 
+    let userKey = "server.User"
+
+    open System.Security.Claims
+
+    let authenticated = fun (ctx:HttpContext) ->
+      async{
+        if ctx.userState.ContainsKey userKey then
+          let claims = ctx.userState.[userKey] :?> ClaimsPrincipal
+          if claims.Identity.IsAuthenticated then
+            return Some ctx
+          else
+            return None
+        else
+          return None
+      }
+
     [<EntryPoint>]
     let main argv =
         // Launch identity server first
@@ -34,7 +50,7 @@ module Demo =
         let securityMiddleware = securityMiddleware ()
         let app =
             choose [
-                path "/devices" >=> (OwinApp.ofAppFunc "/devices" securityMiddleware =>= OK "Hello, this is a restricted area")
+                path "/devices" >=> (OwinApp.ofAppFunc "/devices" securityMiddleware =>= choose [ authenticated >=> OK "Hello authenticated user" ; OK "Hello, this is a restricted area" ])
                 path "/test" >=> OK "Hello world, welcome to public recreational area."
                 NOT_FOUND "No handlers found"
             ]
