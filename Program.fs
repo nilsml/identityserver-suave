@@ -17,7 +17,7 @@ module Demo =
       let config = { defaultConfig with bindings = [ HttpBinding.createSimple Protocol.HTTP "127.0.0.1" 8003] }
       let app =
           choose [
-              pathStarts "/identityserver" >=> (OwinApp.ofAppFunc "/identityserver" identityServer =>= NOT_FOUND "File not found" )
+              pathStarts "/identityserver" >=> OwinApp.ofAppFunc "/identityserver" identityServer
               NOT_FOUND "No handlers found"
               ]
       let a,startServer = startWebServerAsync config app
@@ -50,7 +50,7 @@ module Demo =
         let securityMiddleware = securityMiddleware ()
         let app =
             choose [
-                path "/devices" >=> (OwinApp.ofAppFunc "/devices" securityMiddleware =>= choose [ authenticated >=> OK "Hello authenticated user" ; OK "Hello, this is a restricted area" ])
+                path "/devices" >=> (OwinApp.ofAppFunc "/devices" securityMiddleware >=> choose [ authenticated >=> OK "Hello authenticated user" ; OK "Hello, this is a restricted area" ])
                 path "/test" >=> OK "Hello world, welcome to public recreational area."
                 NOT_FOUND "No handlers found"
             ]
