@@ -7,7 +7,7 @@
     <ProjectGuid>{43B86527-8AF7-4987-80CA-5C4B2E8D69F1}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>Frende.SalesTracking.WebApi</RootNamespace>
-    <AssemblyName>Frende.SalesTracking.WebApi</AssemblyName>
+    <AssemblyName>identityserver</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFSharpCoreVersion>4.4.0.0</TargetFSharpCoreVersion>
