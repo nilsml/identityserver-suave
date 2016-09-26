@@ -69,6 +69,10 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
+    <Reference Include="Suave">
+      <HintPath>packages\Suave.2.0.0-alpha6\lib\net40\Suave.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
@@ -1320,10 +1324,4 @@
       </ItemGroup>
     </When>
   </Choose>
-  <ItemGroup>
-    <ProjectReference Include="..\suave\src\Suave\Suave.fsproj">
-      <Project>{3DC9193E-BD0C-4486-9C58-56B630C36623}</Project>
-      <Name>Suave</Name>
-    </ProjectReference>
-  </ItemGroup>
 </Project>
